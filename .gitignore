@@ -1,0 +1,7 @@
+# secret key for your phone - never commit
+token.txt
+# photos sent from the phone
+photos/
+__pycache__/
+*.pyc
+.DS_Store

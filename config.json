@@ -1,0 +1,89 @@
+{
+  "title": "PhoneDeck",
+  "columns": 3,
+  "open_photos": true,
+  "dashboard": true,
+  "pages": [
+    {
+      "name": "Media",
+      "buttons": [
+        { "label": "Prev",       "icon": "⏮", "action": { "type": "hotkey", "keys": ["prevtrack"] } },
+        { "label": "Play/Pause", "icon": "⏯", "color": "#2b5cff", "action": { "type": "hotkey", "keys": ["playpause"] } },
+        { "label": "Next",       "icon": "⏭", "action": { "type": "hotkey", "keys": ["nexttrack"] } },
+        { "label": "Vol -",      "icon": "🔉", "action": { "type": "hotkey", "keys": ["volumedown"] } },
+        { "label": "Mute",       "icon": "🔇", "color": "#7a2330", "action": { "type": "hotkey", "keys": ["volumemute"] } },
+        { "label": "Vol +",      "icon": "🔊", "action": { "type": "hotkey", "keys": ["volumeup"] } },
+        { "label": "Spotify",    "icon": "🎵", "color": "#1d8a48", "action": { "type": "run", "cmd": "open -a Spotify || open https://open.spotify.com" } },
+        { "label": "Music",      "icon": "🎶", "color": "#b0283f", "action": { "type": "run", "cmd": "open -a Music" } },
+        { "label": "YouTube",    "icon": "📺", "color": "#a3201d", "action": { "type": "open", "target": "https://youtube.com" } }
+      ]
+    },
+    {
+      "name": "Meetings",
+      "buttons": [
+        { "label": "Zoom mute",   "icon": "🎙", "color": "#7a2330", "action": { "type": "hotkey", "keys": ["cmd", "shift", "a"] } },
+        { "label": "Zoom video",  "icon": "📹", "action": { "type": "hotkey", "keys": ["cmd", "shift", "v"] } },
+        { "label": "Teams mute",  "icon": "🎤", "color": "#4b3a9a", "action": { "type": "hotkey", "keys": ["cmd", "shift", "m"] } },
+        { "label": "Teams cam",   "icon": "📷", "color": "#4b3a9a", "action": { "type": "hotkey", "keys": ["cmd", "shift", "o"] } },
+        { "label": "Meet mute",   "icon": "🟢", "action": { "type": "hotkey", "keys": ["cmd", "d"] } },
+        { "label": "Meet cam",    "icon": "🎥", "action": { "type": "hotkey", "keys": ["cmd", "e"] } },
+        { "label": "Discord mute","icon": "🎧", "color": "#4752c4", "action": { "type": "hotkey", "keys": ["cmd", "shift", "m"] } },
+        { "label": "Brb",         "icon": "💬", "action": { "type": "type", "text": "Be right back!" } },
+        { "label": "FaceTime",    "icon": "📞", "color": "#1d8a48", "action": { "type": "run", "cmd": "open -a FaceTime" } }
+      ]
+    },
+    {
+      "name": "Mac",
+      "buttons": [
+        { "label": "Copy",           "icon": "📋", "action": { "type": "hotkey", "keys": ["cmd", "c"] } },
+        { "label": "Paste",          "icon": "📥", "action": { "type": "hotkey", "keys": ["cmd", "v"] } },
+        { "label": "Undo",           "icon": "↩️", "action": { "type": "hotkey", "keys": ["cmd", "z"] } },
+        { "label": "Spotlight",      "icon": "🔍", "color": "#2b5cff", "action": { "type": "hotkey", "keys": ["cmd", "space"] } },
+        { "label": "Mission Control","icon": "🪟", "action": { "type": "hotkey", "keys": ["ctrl", "up"] } },
+        { "label": "Last app",       "icon": "🔀", "action": { "type": "hotkey", "keys": ["cmd", "tab"] } },
+        { "label": "Desktop ←",      "icon": "⬅️", "action": { "type": "hotkey", "keys": ["ctrl", "left"] } },
+        { "label": "Desktop →",      "icon": "➡️", "action": { "type": "hotkey", "keys": ["ctrl", "right"] } },
+        { "label": "Hide others",    "icon": "🙈", "action": { "type": "hotkey", "keys": ["cmd", "alt", "h"] } },
+        { "label": "Screenshot",     "icon": "📸", "action": { "type": "hotkey", "keys": ["cmd", "shift", "4"] } },
+        { "label": "Screen record",  "icon": "🎬", "action": { "type": "hotkey", "keys": ["cmd", "shift", "5"] } },
+        { "label": "Emoji",          "icon": "😀", "action": { "type": "hotkey", "keys": ["ctrl", "cmd", "space"] } },
+        { "label": "Finder",         "icon": "📁", "action": { "type": "run", "cmd": "open -a Finder ~" } },
+        { "label": "Terminal",       "icon": "⌨️", "color": "#333a4d", "action": { "type": "run", "cmd": "open -a Terminal" } },
+        { "label": "Activity",       "icon": "📈", "action": { "type": "run", "cmd": "open -a 'Activity Monitor'" } },
+        { "label": "Display off",    "icon": "🌙", "color": "#333a4d", "action": { "type": "run", "cmd": "pmset displaysleepnow" } },
+        { "label": "Lock Mac",       "icon": "🔒", "color": "#7a2330", "action": { "type": "hotkey", "keys": ["ctrl", "cmd", "q"] } },
+        { "label": "Hello macro",    "icon": "✨", "color": "#8a5a00", "action": { "type": "multi", "delay": 0.15, "steps": [
+            { "type": "hotkey", "keys": ["cmd", "a"] },
+            { "type": "type", "text": "Hello from my iPhone 5!" },
+            { "type": "hotkey", "keys": ["enter"] }
+        ] } }
+      ]
+    },
+    {
+      "name": "Browser",
+      "buttons": [
+        { "label": "New tab",    "icon": "➕", "action": { "type": "hotkey", "keys": ["cmd", "t"] } },
+        { "label": "Close tab",  "icon": "✖️", "color": "#7a2330", "action": { "type": "hotkey", "keys": ["cmd", "w"] } },
+        { "label": "Reopen tab", "icon": "♻️", "action": { "type": "hotkey", "keys": ["cmd", "shift", "t"] } },
+        { "label": "Prev tab",   "icon": "◀️", "action": { "type": "hotkey", "keys": ["cmd", "alt", "left"] } },
+        { "label": "Reload",     "icon": "🔄", "action": { "type": "hotkey", "keys": ["cmd", "r"] } },
+        { "label": "Next tab",   "icon": "▶️", "action": { "type": "hotkey", "keys": ["cmd", "alt", "right"] } },
+        { "label": "Back",       "icon": "⬅️", "action": { "type": "hotkey", "keys": ["cmd", "left"] } },
+        { "label": "Fullscreen", "icon": "⛶",  "action": { "type": "hotkey", "keys": ["ctrl", "cmd", "f"] } },
+        { "label": "Forward",    "icon": "➡️", "action": { "type": "hotkey", "keys": ["cmd", "right"] } }
+      ]
+    },
+    {
+      "name": "OBS",
+      "buttons": [
+        { "label": "Scene 1",  "icon": "1️⃣", "action": { "type": "hotkey", "keys": ["ctrl", "alt", "f1"] } },
+        { "label": "Scene 2",  "icon": "2️⃣", "action": { "type": "hotkey", "keys": ["ctrl", "alt", "f2"] } },
+        { "label": "Scene 3",  "icon": "3️⃣", "action": { "type": "hotkey", "keys": ["ctrl", "alt", "f3"] } },
+        { "label": "Rec",      "icon": "⏺", "color": "#a3201d", "action": { "type": "hotkey", "keys": ["ctrl", "alt", "f9"] } },
+        { "label": "Stream",   "icon": "📡", "color": "#2b5cff", "action": { "type": "hotkey", "keys": ["ctrl", "alt", "f10"] } },
+        { "label": "Mic mute", "icon": "🎙", "color": "#7a2330", "action": { "type": "hotkey", "keys": ["ctrl", "alt", "f11"] } },
+        { "label": "OBS",      "icon": "🎥", "color": "#333a4d", "action": { "type": "run", "cmd": "open -a OBS" } }
+      ]
+    }
+  ]
+}

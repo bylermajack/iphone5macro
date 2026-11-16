@@ -1,0 +1,65 @@
+{
+  "title": "PhoneDeck",
+  "columns": 3,
+  "open_photos": true,
+  "dashboard": true,
+  "pages": [
+    {
+      "name": "Media",
+      "buttons": [
+        { "label": "Prev",      "icon": "⏮", "action": { "type": "hotkey", "keys": ["prevtrack"] } },
+        { "label": "Play/Pause","icon": "⏯", "color": "#2b5cff", "action": { "type": "hotkey", "keys": ["playpause"] } },
+        { "label": "Next",      "icon": "⏭", "action": { "type": "hotkey", "keys": ["nexttrack"] } },
+        { "label": "Vol -",     "icon": "🔉", "action": { "type": "hotkey", "keys": ["volumedown"] } },
+        { "label": "Mute",      "icon": "🔇", "color": "#7a2330", "action": { "type": "hotkey", "keys": ["volumemute"] } },
+        { "label": "Vol +",     "icon": "🔊", "action": { "type": "hotkey", "keys": ["volumeup"] } },
+        { "label": "Spotify",   "icon": "🎵", "color": "#1d8a48", "action": { "type": "open", "target": "https://open.spotify.com" } },
+        { "label": "YouTube",   "icon": "📺", "color": "#a3201d", "action": { "type": "open", "target": "https://youtube.com" } },
+        { "label": "Fullscreen","icon": "⛶",  "action": { "type": "hotkey", "keys": ["f"] } }
+      ]
+    },
+    {
+      "name": "Meetings",
+      "buttons": [
+        { "label": "Zoom mute",   "icon": "🎙", "color": "#7a2330", "action": { "type": "hotkey", "keys": ["alt", "a"] } },
+        { "label": "Zoom video",  "icon": "📹", "action": { "type": "hotkey", "keys": ["alt", "v"] } },
+        { "label": "Teams mute",  "icon": "🎤", "color": "#4b3a9a", "action": { "type": "hotkey", "keys": ["ctrl", "shift", "m"] } },
+        { "label": "Teams cam",   "icon": "📷", "color": "#4b3a9a", "action": { "type": "hotkey", "keys": ["ctrl", "shift", "o"] } },
+        { "label": "Meet mute",   "icon": "🟢", "action": { "type": "hotkey", "keys": ["ctrl", "d"] } },
+        { "label": "Meet cam",    "icon": "🎥", "action": { "type": "hotkey", "keys": ["ctrl", "e"] } },
+        { "label": "Discord mute","icon": "🎧", "color": "#4752c4", "action": { "type": "hotkey", "keys": ["ctrl", "shift", "m"] } },
+        { "label": "Brb",         "icon": "💬", "action": { "type": "type", "text": "Be right back!" } },
+        { "label": "Screenshot",  "icon": "📸", "action": { "type": "hotkey", "keys": ["printscreen"] } }
+      ]
+    },
+    {
+      "name": "Desktop",
+      "buttons": [
+        { "label": "Copy",        "icon": "📋", "action": { "type": "hotkey", "keys": ["ctrl", "c"] } },
+        { "label": "Paste",       "icon": "📥", "action": { "type": "hotkey", "keys": ["ctrl", "v"] } },
+        { "label": "Undo",        "icon": "↩️", "action": { "type": "hotkey", "keys": ["ctrl", "z"] } },
+        { "label": "Alt+Tab",     "icon": "🔀", "action": { "type": "hotkey", "keys": ["alt", "tab"] } },
+        { "label": "Show desktop","icon": "🖥", "action": { "type": "hotkey", "keys": ["win", "d"] } },
+        { "label": "Lock PC",     "icon": "🔒", "color": "#7a2330", "action": { "type": "hotkey", "keys": ["win", "l"] } },
+        { "label": "Terminal",    "icon": "⌨️", "color": "#333a4d", "action": { "type": "hotkey", "keys": ["ctrl", "alt", "t"] } },
+        { "label": "Browser",     "icon": "🌐", "action": { "type": "open", "target": "https://google.com" } },
+        { "label": "Hello macro", "icon": "✨", "color": "#8a5a00", "action": { "type": "multi", "delay": 0.1, "steps": [
+            { "type": "hotkey", "keys": ["ctrl", "a"] },
+            { "type": "type", "text": "Hello from my iPhone 5!" },
+            { "type": "hotkey", "keys": ["enter"] }
+        ] } }
+      ]
+    },
+    {
+      "name": "OBS",
+      "buttons": [
+        { "label": "Scene 1",     "icon": "1️⃣", "action": { "type": "hotkey", "keys": ["ctrl", "alt", "f1"] } },
+        { "label": "Scene 2",     "icon": "2️⃣", "action": { "type": "hotkey", "keys": ["ctrl", "alt", "f2"] } },
+        { "label": "Scene 3",     "icon": "3️⃣", "action": { "type": "hotkey", "keys": ["ctrl", "alt", "f3"] } },
+        { "label": "Rec",         "icon": "⏺", "color": "#a3201d", "action": { "type": "hotkey", "keys": ["ctrl", "alt", "f9"] } },
+        { "label": "Stream",      "icon": "📡", "color": "#2b5cff", "action": { "type": "hotkey", "keys": ["ctrl", "alt", "f10"] } },
+        { "label": "Mic mute",    "icon": "🎙", "color": "#7a2330", "action": { "type": "hotkey", "keys": ["ctrl", "alt", "f11"] } }
+      ]
+    }
+  ]
+}

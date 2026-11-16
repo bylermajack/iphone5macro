@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>PhoneDeck</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PhoneDeck">
+<meta name="format-detection" content="telephone=no">
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: rgba(0,0,0,0); -webkit-user-select: none; -webkit-touch-callout: none; }
+  html, body { margin: 0; height: 100%; background: #0e0f13; color: #e8e9ee;
+    font-family: -apple-system, "Helvetica Neue", Helvetica, sans-serif; overflow: hidden; }
+  .flex { display: -webkit-flex; display: flex; }
+  #app { display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; height: 100%; padding-top: 20px; }
+  #top { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; padding: 6px 12px; font-size: 13px; color: #8a8d99; }
+  #top b { color: #e8e9ee; font-size: 15px; margin-right: 8px; }
+  #status { -webkit-flex: 1; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 4px; background: #555; margin-right: 6px; }
+  .dot.on { background: #3ddc84; } .dot.off { background: #ff5c5c; }
+  .tbtn { border: 0; background: #1c1e26; color: #e8e9ee; border-radius: 8px; padding: 6px 10px; font-size: 15px; margin-left: 6px; }
+  .view { -webkit-flex: 1; flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+
+  /* ---------- Button grid ---------- */
+  #grid { display: -webkit-flex; display: flex; -webkit-flex-wrap: wrap; flex-wrap: wrap;
+    -webkit-align-content: flex-start; align-content: flex-start; padding: 4px 6px; }
+  .key { padding: 5px; }
+  .key > div { height: 92px; border-radius: 16px; background: #1c1e26; display: -webkit-flex; display: flex;
+    -webkit-flex-direction: column; flex-direction: column; -webkit-align-items: center; align-items: center;
+    -webkit-justify-content: center; justify-content: center; text-align: center; padding: 6px;
+    border-bottom: 3px solid rgba(0,0,0,.35); -webkit-transition: -webkit-transform .08s; }
+  .key .ic { font-size: 32px; line-height: 36px; }
+  .key .lb { font-size: 12px; margin-top: 4px; line-height: 14px; max-height: 28px; overflow: hidden; color: #fff; }
+  .down > div, .mbtn.down { -webkit-transform: scale(.93); transform: scale(.93); }
+  .ok > div, .mbtn.ok { box-shadow: 0 0 0 3px #3ddc84 inset; }
+  .err > div, .mbtn.err { box-shadow: 0 0 0 3px #ff5c5c inset; }
+
+  /* ---------- Dashboard ---------- */
+  #dash { padding: 4px 10px 10px; }
+  .card { background: #171920; border-radius: 16px; padding: 12px 14px; margin-bottom: 10px; }
+  .muted { color: #8a8d99; }
+  #clock { text-align: center; padding: 14px 10px 12px; }
+  #clockTime { font-size: 64px; font-weight: 200; letter-spacing: -1px; line-height: 64px; color: #fff; }
+  #clockTime small { font-size: 22px; font-weight: 300; color: #8a8d99; letter-spacing: 0; margin-left: 4px; }
+  #clockDate { font-size: 14px; margin-top: 6px; }
+  #np .t { font-size: 16px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+  #np .a { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+  #np .app { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
+  .mrow { display: -webkit-flex; display: flex; margin-top: 10px; }
+  .mbtn { -webkit-flex: 1; flex: 1; margin: 0 3px; height: 46px; border-radius: 12px; background: #23262f;
+    font-size: 20px; line-height: 46px; text-align: center; color: #fff; }
+  .mbtn.big { background: #2b5cff; }
+  .mrow.small .mbtn { height: 36px; line-height: 36px; font-size: 16px; }
+  #stats { display: -webkit-flex; display: flex; -webkit-flex-wrap: wrap; flex-wrap: wrap; margin: 0 -5px; }
+  .stat { width: 50%; padding: 0 5px 10px; }
+  .stat > div { background: #171920; border-radius: 14px; padding: 10px 12px; height: 74px; }
+  .stat .k { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #8a8d99; }
+  .stat .v { font-size: 20px; color: #fff; margin-top: 2px; white-space: nowrap; }
+  .stat .v small { font-size: 12px; color: #8a8d99; margin-left: 2px; }
+  .stat .s { font-size: 11px; color: #8a8d99; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bar { height: 4px; background: #262934; border-radius: 2px; margin-top: 6px; overflow: hidden; }
+  .bar i { display: block; height: 100%; width: 0; background: #6c8cff; border-radius: 2px; -webkit-transition: width .6s; }
+  .bar i.warn { background: #ffb020; } .bar i.hot { background: #ff5c5c; }
+
+  /* Clock-only mode: tap the clock */
+  body.clockonly #top, body.clockonly #tabs, body.clockonly #np, body.clockonly #stats { display: none; }
+  body.clockonly #dash { height: 100%; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; }
+  body.clockonly #clock { background: transparent; width: 100%; }
+  body.clockonly #clockTime { font-size: 96px; line-height: 96px; }
+  body.clockonly #clockDate { font-size: 18px; }
+
+  @media (orientation: landscape) {
+    #app { padding-top: 0; }
+    #dashInner { display: -webkit-flex; display: flex; -webkit-flex-wrap: wrap; flex-wrap: wrap; margin: 0 -5px; }
+    #clock, #np { width: calc(50% - 10px); margin-left: 5px; margin-right: 5px; }
+    #stats { width: 100%; margin: 0; }
+    .stat { width: 25%; }
+    body.clockonly #clockTime { font-size: 150px; line-height: 150px; }
+  }
+
+  #tabs { display: -webkit-flex; display: flex; border-top: 1px solid #22242d; background: #121319; overflow-x: auto; }
+  .tab { -webkit-flex: 1; flex: 1; padding: 12px 6px 16px; text-align: center; font-size: 13px; color: #8a8d99; white-space: nowrap; }
+  .tab.on { color: #fff; box-shadow: 0 -2px 0 #6c8cff inset; }
+  .msg { padding: 40px 24px; text-align: center; color: #8a8d99; font-size: 15px; line-height: 1.5; width: 100%; }
+  #toast { position: fixed; left: 50%; bottom: 70px; -webkit-transform: translateX(-50%); transform: translateX(-50%);
+    background: #2a2d38; color: #fff; padding: 8px 14px; border-radius: 10px; font-size: 13px; opacity: 0;
+    -webkit-transition: opacity .2s; pointer-events: none; max-width: 90%; text-align: center; z-index: 9; }
+  #toast.show { opacity: 1; }
+  #photo { display: none; }
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="top">
+    <b id="title">PhoneDeck</b>
+    <span id="status"><span class="dot" id="dot"></span><span id="host">connecting…</span></span>
+    <button class="tbtn" id="camBtn" title="Send photo to PC">📷</button>
+    <button class="tbtn" id="refBtn" title="Reload">⟳</button>
+  </div>
+
+  <div class="view" id="gridView"><div id="grid"><div class="msg">Loading…</div></div></div>
+
+  <div class="view" id="dashView" style="display:none">
+    <div id="dash"><div id="dashInner">
+      <div class="card" id="clock">
+        <div id="clockTime">--:--</div>
+        <div id="clockDate" class="muted"></div>
+      </div>
+      <div class="card" id="np">
+        <div class="app muted" id="npApp">Now playing</div>
+        <div class="t" id="npTitle">Nothing playing</div>
+        <div class="a muted" id="npArtist">&nbsp;</div>
+        <div class="mrow">
+          <div class="mbtn" data-media="prevtrack">⏮</div>
+          <div class="mbtn big" data-media="playpause" id="npPlay">⏯</div>
+          <div class="mbtn" data-media="nexttrack">⏭</div>
+        </div>
+        <div class="mrow small">
+          <div class="mbtn" data-media="volumedown">🔉</div>
+          <div class="mbtn" data-media="volumemute">🔇</div>
+          <div class="mbtn" data-media="volumeup">🔊</div>
+        </div>
+      </div>
+      <div id="stats"></div>
+    </div></div>
+  </div>
+
+  <div id="tabs"></div>
+</div>
+<input type="file" id="photo" accept="image/*" capture="camera">
+<div id="toast"></div>
+
+<script>
+(function () {
+  var DASH = -1;
+  var key = (location.search.match(/[?&]k=([^&]+)/) || [])[1];
+  function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) {} return null; }
+  if (key) store("phonedeck_key", key); else key = store("phonedeck_key");
+
+  var cfg = null;
+  var page = parseInt(store("phonedeck_page") || "0", 10);
+  if (isNaN(page)) page = 0;
+  var h24 = store("phonedeck_24h") !== "0";
+
+  var $ = function (id) { return document.getElementById(id); };
+  var toastTimer;
+  function toast(t) {
+    var el = $("toast"); el.textContent = t; el.className = "show";
+    clearTimeout(toastTimer); toastTimer = setTimeout(function () { el.className = ""; }, 1600);
+  }
+  function setOnline(on, text) {
+    $("dot").className = "dot " + (on ? "on" : "off");
+    if (text) $("host").textContent = text;
+  }
+
+  function req(method, url, body, ctype, cb) {
+    var x = new XMLHttpRequest();
+    x.open(method, url, true);
+    x.timeout = 8000;
+    x.setRequestHeader("X-Token", key || "");
+    if (ctype) x.setRequestHeader("Content-Type", ctype);
+    x.onload = function () {
+      var data = null;
+      try { data = JSON.parse(x.responseText); } catch (e) {}
+      cb(x.status, data);
+    };
+    x.onerror = x.ontimeout = function () { cb(0, null); };
+    x.send(body || null);
+  }
+
+  function showMsg(html) {
+    $("dashView").style.display = "none"; $("gridView").style.display = "";
+    $("grid").innerHTML = '<div class="msg">' + html + '</div>';
+  }
+
+  function load() {
+    if (!key) { setOnline(false, "no key"); return showMsg('Open the full link printed by <b>server.py</b> on your PC (it ends with <b>?k=…</b>).'); }
+    req("GET", "/api/config", null, null, function (st, data) {
+      if (st === 200 && data) {
+        cfg = data;
+        $("title").textContent = data.title || "PhoneDeck";
+        setOnline(true, data.host + " · " + data.os);
+        if (page === DASH && !cfg.dashboard) page = 0;
+        if (page >= data.pages.length) page = 0;
+        render();
+      } else if (st === 401) {
+        setOnline(false, "wrong key");
+        showMsg('Key rejected. Re-open the link printed by server.py.');
+      } else {
+        setOnline(false, "PC offline");
+        showMsg('Can\'t reach the PC.<br>Is server.py running and the phone on the same Wi-Fi?<br><br>Tap ⟳ to retry.');
+      }
+    });
+  }
+
+  function addTab(label, idx) {
+    var t = document.createElement("div");
+    t.className = "tab" + (idx === page ? " on" : "");
+    t.textContent = label;
+    t.onclick = function () { page = idx; store("phonedeck_page", page); render(); };
+    $("tabs").appendChild(t);
+  }
+
+  function render() {
+    var i;
+    $("tabs").innerHTML = "";
+    if (cfg.dashboard) addTab("📊 Screen", DASH);
+    for (i = 0; i < cfg.pages.length; i++) addTab(cfg.pages[i].name, i);
+    $("tabs").style.display = $("tabs").children.length > 1 ? "" : "none";
+
+    var isDash = page === DASH;
+    $("dashView").style.display = isDash ? "" : "none";
+    $("gridView").style.display = isDash ? "none" : "";
+    if (isDash) { pollStats(); return; }
+
+    var grid = $("grid");
+    grid.innerHTML = "";
+    var w = (100 / (cfg.columns || 3)) + "%";
+    var btns = cfg.pages[page] ? cfg.pages[page].buttons : [];
+    if (!btns.length) { grid.innerHTML = '<div class="msg">No buttons on this page. Add some in config.json.</div>'; return; }
+    for (i = 0; i < btns.length; i++) {
+      var b = btns[i];
+      var k = document.createElement("div");
+      k.className = "key"; k.style.width = w;
+      var inner = document.createElement("div");
+      if (b.color) inner.style.background = b.color;
+      var ic = document.createElement("span"); ic.className = "ic"; ic.textContent = b.icon || "▫️";
+      var lb = document.createElement("span"); lb.className = "lb"; lb.textContent = b.label;
+      inner.appendChild(ic); inner.appendChild(lb); k.appendChild(inner);
+      pressable(k, "key", (function (idx) {
+        return function (done) { req("POST", "/api/press", JSON.stringify({ page: page, button: idx }), "application/json", done); };
+      })(i));
+      grid.appendChild(k);
+    }
+  }
+
+  // Shared tap feedback: pressed look, then green/red flash from the PC's reply.
+  function pressable(el, base, send) {
+    el.addEventListener("touchstart", function () { el.className = base + " down"; }, false);
+    el.addEventListener("touchend", function () { el.className = base; }, false);
+    el.addEventListener("touchcancel", function () { el.className = base; }, false);
+    el.onclick = function () {
+      send(function (st, data) {
+        el.className = base + " " + (st === 200 ? "ok" : "err");
+        setTimeout(function () { el.className = base; }, 350);
+        if (st === 0) { setOnline(false, "PC offline"); toast("PC not reachable"); }
+        else if (st !== 200) toast((data && data.error) || ("Error " + st));
+        else if (page === DASH) setTimeout(pollStats, 400);
+      });
+    };
+  }
+
+  // ---------------- Dashboard ----------------
+  var DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  function pad(n) { return n < 10 ? "0" + n : "" + n; }
+  function tickClock() {
+    var d = new Date(), h = d.getHours(), suffix = "";
+    if (!h24) { suffix = h < 12 ? " AM" : " PM"; h = h % 12 || 12; }
+    $("clockTime").innerHTML = (h24 ? pad(h) : h) + ":" + pad(d.getMinutes()) +
+      "<small>" + pad(d.getSeconds()) + suffix + "</small>";
+    $("clockDate").textContent = DAYS[d.getDay()] + ", " + d.getDate() + " " + MONTHS[d.getMonth()];
+  }
+  setInterval(tickClock, 1000); tickClock();
+
+  var lastClockTap = 0;
+  $("clock").onclick = function () {
+    // single tap: toggle clock-only mode · double tap: 12h / 24h
+    var now = Date.now();
+    if (now - lastClockTap < 300) {
+      h24 = !h24; store("phonedeck_24h", h24 ? "1" : "0");
+      document.body.className = document.body.className === "clockonly" ? "" : "clockonly";
+      tickClock(); lastClockTap = 0; return;
+    }
+    lastClockTap = now;
+    document.body.className = document.body.className === "clockonly" ? "" : "clockonly";
+  };
+
+  var mb = document.querySelectorAll("[data-media]");
+  for (var mi = 0; mi < mb.length; mi++) {
+    (function (el) {
+      pressable(el, el.className, function (done) {
+        req("POST", "/api/media", JSON.stringify({ key: el.getAttribute("data-media") }), "application/json", done);
+      });
+    })(mb[mi]);
+  }
+
+  function gb(b) {
+    if (b == null) return "–";
+    var g = b / 1073741824;
+    return g >= 100 ? Math.round(g) : g.toFixed(1);
+  }
+  function rate(b) {
+    if (b < 1024) return Math.round(b) + " B/s";
+    if (b < 1048576) return (b / 1024).toFixed(b < 10240 ? 1 : 0) + " KB/s";
+    return (b / 1048576).toFixed(1) + " MB/s";
+  }
+  function dur(s) {
+    s = Math.floor(s); var d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60);
+    return d ? d + "d " + h + "h" : h ? h + "h " + m + "m" : m + "m";
+  }
+  function esc(t) { return String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+  function tile(k, v, unit, sub, pct, lowIsBad) {
+    var bar = "";
+    if (pct != null) {
+      var cls = lowIsBad ? (pct <= 15 ? "hot" : pct <= 30 ? "warn" : "") : (pct >= 90 ? "hot" : pct >= 70 ? "warn" : "");
+      bar = '<div class="bar"><i class="' + cls + '" style="width:' + Math.min(100, Math.max(0, pct)) + '%"></i></div>';
+    }
+    return '<div class="stat"><div><div class="k">' + k + '</div><div class="v">' + v +
+      (unit ? "<small>" + unit + "</small>" : "") + "</div>" + bar +
+      (sub ? '<div class="s">' + esc(sub) + "</div>" : "") + "</div></div>";
+  }
+
+  function renderStats(s) {
+    var h = "";
+    h += tile("CPU", s.cpu == null ? "–" : Math.round(s.cpu), "%", (s.cores || "?") + " cores", s.cpu);
+    if (s.mem) {
+      var mp = s.mem.used / s.mem.total * 100;
+      h += tile("RAM", Math.round(mp), "%", gb(s.mem.used) + " / " + gb(s.mem.total) + " GB", mp);
+    }
+    if (s.gpu) h += tile("GPU", s.gpu.percent, "%", s.gpu.name, s.gpu.percent);
+    if (s.gpu) h += tile("GPU temp", s.gpu.temp, "°C", gb(s.gpu.mem_used) + " / " + gb(s.gpu.mem_total) + " GB VRAM", s.gpu.temp);
+    if (s.temp != null) h += tile("CPU temp", s.temp, "°C", null, s.temp);
+    if (s.disk) {
+      var dp = s.disk.used / s.disk.total * 100;
+      h += tile("Disk", Math.round(dp), "%", gb(s.disk.total - s.disk.used) + " GB free", dp);
+    }
+    if (s.net) h += tile("Network", "↓ " + rate(s.net.down), "", "↑ " + rate(s.net.up));
+    if (s.battery) h += tile("Battery", s.battery.percent, "%", s.battery.plugged ? "⚡ charging" : "on battery", s.battery.percent, true);
+    if (s.uptime != null) h += tile("Uptime", dur(s.uptime), "", "since boot");
+    $("stats").innerHTML = h;
+
+    var m = s.media || {};
+    if (m.status && m.status !== "none" && (m.title || m.artist)) {
+      $("npApp").textContent = (m.status === "playing" ? "▶ " : "❚❚ ") + (m.app || "Now playing");
+      $("npTitle").textContent = m.title || "Unknown title";
+      $("npArtist").textContent = m.artist || " ";
+      $("npPlay").textContent = m.status === "playing" ? "⏸" : "▶️";
+    } else {
+      $("npApp").textContent = "Now playing";
+      $("npTitle").textContent = "Nothing playing";
+      $("npArtist").textContent = " ";
+      $("npPlay").textContent = "⏯";
+    }
+  }
+  var pollTimer = null, polling = false;
+  function pollStats() {
+    clearTimeout(pollTimer);
+    if (page !== DASH || document.hidden || !cfg) return;
+    if (polling) return;
+    polling = true;
+    req("GET", "/api/stats", null, null, function (st, data) {
+      polling = false;
+      if (st === 200 && data) { setOnline(true); renderStats(data); }
+      else setOnline(false, st === 0 ? "PC offline" : null);
+      clearTimeout(pollTimer);
+      pollTimer = setTimeout(pollStats, st === 200 ? 2000 : 5000);
+    });
+  }
+
+  // ---------------- Misc ----------------
+  $("camBtn").onclick = function () { $("photo").click(); };
+  $("photo").onchange = function () {
+    var f = this.files && this.files[0];
+    if (!f) return;
+    toast("Sending photo…");
+    req("POST", "/api/photo", f, f.type || "image/jpeg", function (st, data) {
+      toast(st === 200 ? "Saved on PC: " + data.file : "Upload failed");
+    });
+    this.value = "";
+  };
+  $("refBtn").onclick = load;
+
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) load(); }, false);
+  document.addEventListener("touchmove", function (e) {
+    var v = page === DASH ? $("dashView") : $("gridView");
+    if (!v.contains(e.target) || v.scrollHeight <= v.clientHeight) e.preventDefault();
+  }, false);
+
+  load();
+})();
+</script>
+</body>
+</html>
